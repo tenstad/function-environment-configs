@@ -122,6 +122,9 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1.RunFunctionRequest) 
 		mergedData = mergeMaps(defaultData, mergedData)
 	}
 
+	mergedDataClone := make(map[string]any, len(mergedData))
+	maps.Copy(mergedDataClone, mergedData)
+
 	// build environment and return it in the response as context
 	out := &unstructured.Unstructured{Object: mergedData}
 	if out.GroupVersionKind().Empty() {
@@ -142,7 +145,7 @@ func (f *Function) RunFunction(_ context.Context, req *fnv1.RunFunctionRequest) 
 	// values coming from EnvironmentConfigs resolved by this same step.
 	// Requirements that grew make Crossplane call us again with the newly
 	// requested resources.
-	requirements, err = buildRequirements(in, oxr, out.Object)
+	requirements, err = buildRequirements(in, oxr, mergedDataClone)
 	if err != nil {
 		response.Fatal(rsp, errors.Wrapf(err, "cannot build requirements"))
 		return rsp, nil

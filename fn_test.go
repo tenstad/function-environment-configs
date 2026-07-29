@@ -1093,7 +1093,8 @@ func TestRunFunction(t *testing.T) {
 											}
 										},
 										"data": {
-											"team": "platform"
+											"team": "platform",
+											"apiVersion": "3/0/2"
 										}
 									}`),
 								},
@@ -1131,6 +1132,20 @@ func TestRunFunction(t *testing.T) {
 											}
 										]
 									}
+								},
+								{
+									"type": "Selector",
+									"selector": {
+										"mode": "Single",
+										"matchLabels": [
+											{
+												"type": "FromEnvironmentFieldPath",
+												"key": "team",
+												"valueFromFieldPath": "apiVersion",
+												"fromFieldPathPolicy": "Optional"
+											}
+										]
+									}
 								}
 							]
 						}
@@ -1163,6 +1178,17 @@ func TestRunFunction(t *testing.T) {
 									MatchLabels: &fnv1.MatchLabels{
 										Labels: map[string]string{
 											"team": "platform",
+										},
+									},
+								},
+							},
+							"environment-config-2": {
+								ApiVersion: "apiextensions.crossplane.io/v1beta1",
+								Kind:       "EnvironmentConfig",
+								Match: &fnv1.ResourceSelector_MatchLabels{
+									MatchLabels: &fnv1.MatchLabels{
+										Labels: map[string]string{
+											"team": "3/0/2",
 										},
 									},
 								},
